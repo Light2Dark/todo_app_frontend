@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { userLoggedIn } from "../Auth/AuthFuncs"
 import TodoItem from "./TodoItem"
 
 export interface TodoProps {
@@ -19,8 +20,13 @@ const getAxiosConfig = () => {
 const Todo = () => {
     const [todos, setTodos] = useState<TodoProps[] | []>([])
     useEffect(() => {
-        getTodosFromServer()
+        if (userLoggedIn()) { // oni pull from server when the user is logged in
+            getTodosFromServer()
+        }
     }, [])
+
+
+    // TOP LEVEL SERVER FUNCTIONS ARE HERE SO THAT WE CHECK IF USER IS LOGGED IN BEFORE WE CALL SERVER FUNCS
 
     async function getTodosFromServer() {
         axios.get(`${process.env.REACT_APP_BACKEND_URL}/todo`, getAxiosConfig()).then(res => {
@@ -33,7 +39,7 @@ const Todo = () => {
         })
     }
 
-    async function postTodoToServer(todo: TodoProps) {
+    async function addTodo(todo: TodoProps) {
         let duplicate: boolean = false
         todos.forEach(todoLocal => {
             if (todoLocal.item === todo.item) { // duplicate
@@ -46,6 +52,12 @@ const Todo = () => {
             return alert("Todo already exists")
         }
 
+        if (userLoggedIn()) {
+            postTodoToServer(todo)
+        }
+    }
+
+    async function postTodoToServer(todo: TodoProps) {
         // server code
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/todo`, todo, getAxiosConfig()).then(res => {
             // getTodosFromServer()
@@ -64,12 +76,11 @@ const Todo = () => {
             id: todos.length + 1,
             item: input.value
         }
-        postTodoToServer(todo)
+        addTodo(todo)
         event.target.reset() // reset the form
     }
 
-    // when user finishes editing / clicks on the check mark after editing a to-do
-    async function updateTodoInServer({ id, item }: TodoProps) {
+    async function updateTodo({ id, item }: TodoProps) {
         let todo: TodoProps = {
             id: id,
             item: item
@@ -81,14 +92,28 @@ const Todo = () => {
             return todo
         }))
 
-        axios.put(`${process.env.REACT_APP_BACKEND_URL}/todo/${id}`, todo, getAxiosConfig()).then(res => {
+        if (userLoggedIn()) {
+            updateTodoInServer(todo)
+        }
+    }
+
+    // when user finishes editing / clicks on the check mark after editing a to-do
+    async function updateTodoInServer(todo: TodoProps) {
+        axios.put(`${process.env.REACT_APP_BACKEND_URL}/todo/${todo.id}`, todo, getAxiosConfig()).then(res => {
             getTodosFromServer()
         }).catch(err => {
             console.log(err)
         })
     }
 
-    async function deleteTodoInServer({id}: TodoProps) {
+    async function deleteTodo({id}: TodoProps) {
+        setTodos(todos.filter(todo => todo.id !== id))
+        if (userLoggedIn()) {
+            deleteTodoInServer(id)
+        }
+    }
+
+    async function deleteTodoInServer(id: number) {
         setTodos(todos.filter(todo => todo.id !== id)) // all todos that are not meant to be deleted are remained in
 
         axios.delete(`${process.env.REACT_APP_BACKEND_URL}/todo/${id}`, getAxiosConfig()).then(res => {
@@ -116,7 +141,7 @@ const Todo = () => {
             </form>
 
             {todos && todos.map(todo => (
-                <TodoItem key={todo.id} id={todo.id} item={todo.item} updateTodoInServer={updateTodoInServer} deleteTodoInServer={deleteTodoInServer} randomColour={getRandomColour()} />
+                <TodoItem key={todo.id} id={todo.id} item={todo.item} updateTodo={updateTodo} deleteTodo={deleteTodo} randomColour={getRandomColour()} />
             ))}
         </div>
     )

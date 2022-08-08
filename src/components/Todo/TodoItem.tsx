@@ -6,12 +6,12 @@ import { TodoProps } from "./Todo"
 type TodoItemProps = {
     id: number
     item: string
-    updateTodoInServer: (props: TodoProps) => void
-    deleteTodoInServer: ({id}: TodoProps) => void
+    updateTodo: (props: TodoProps) => void
+    deleteTodo: ({id}: TodoProps) => void
     randomColour?: string
 }
 
-const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColour}: TodoItemProps) => {
+const TodoItem = ({item, id, updateTodo, deleteTodo, randomColour}: TodoItemProps) => {
     const [isEditing, setIsEditing] = useState(false)
     const todoText = useRef<HTMLParagraphElement>(null)
 
@@ -21,7 +21,7 @@ const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColou
     useEffect(() => {
         let apiSubscribed = true
         if (!isEditing && apiSubscribed) {
-            updateTodo()
+            handleUpdate()
         }
 
         return () => {
@@ -31,9 +31,9 @@ const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColou
 
     // method for both edit button and todo item to handle updating todo in server
     // because there are 2 ways to edit a to-do, by pressing enter & clicking the button
-    const updateTodo = () => {
+    const handleUpdate = () => {
         if (!todoText.current) throw Error("todoText ref is not assigned")
-        updateTodoInServer({id, item: todoText.current.innerText})
+        updateTodo({id, item: todoText.current.innerText})
     }
 
     const handleEnter = (e: any) => {
@@ -47,7 +47,7 @@ const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColou
     }
 
     const handleDelete = () => {
-        deleteTodoInServer({id, item})
+        deleteTodo({id, item})
     }
 
     return (
@@ -57,7 +57,7 @@ const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColou
             suppressContentEditableWarning>{item}</p>
 
             <div className="ml-auto flex flex-row mr-2">
-                <EditButton setIsEditing={setIsEditing} isEditing={isEditing} updateTodo={updateTodo} />
+                <EditButton setIsEditing={setIsEditing} isEditing={isEditing} updateTodo={handleUpdate} />
                 <FaTrash onClick={handleDelete} className="cursor-pointer hover:stroke-[24] hover:stroke-blue-700" />
             </div>
         </div>
