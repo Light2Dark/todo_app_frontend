@@ -29,17 +29,17 @@ const TodoItem = ({item, id, updateTodoInServer, deleteTodoInServer, randomColou
         }
       }, [isEditing])
 
-    const handleEnter = (e: any) => {
-        if (e.keyCode === 13) { // user pressed enter key, which we assume to be finish editing
-            setIsEditing(false)
-        }
-    }
-
     // method for both edit button and todo item to handle updating todo in server
     // because there are 2 ways to edit a to-do, by pressing enter & clicking the button
     const updateTodo = () => {
         if (!todoText.current) throw Error("todoText ref is not assigned")
         updateTodoInServer({id, item: todoText.current.innerText})
+    }
+
+    const handleEnter = (e: any) => {
+        if (e.keyCode === 13) { // user pressed enter key, which we assume to be finish editing
+            setIsEditing(false)
+        }
     }
 
     const enableEdit = () => {

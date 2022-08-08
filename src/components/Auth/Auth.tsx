@@ -63,7 +63,7 @@ const Auth = ({title, subtitle, setSigningIn, setSigningUp, submitText, loginCom
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, body).then(res => {
             console.log(res)
             if (res.data.status_code === 200) { // successfully logged in
-                let token = res.data.token
+                // let token = res.data.token
                 sessionStorage.setItem("user_id", res.data.user_id) // used for database
                 window.location.reload() // refresh browser so that it will load the db
                 closeSignIn()

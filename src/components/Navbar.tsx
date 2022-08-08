@@ -1,7 +1,6 @@
 import { useState } from "react"
 import Toggle from "./Toggle"
 import {Auth} from "./Auth"
-import {getUserId} from "./Auth/AuthFuncs"
 
 type NavbarProps = {
     setDarkTheme: any
