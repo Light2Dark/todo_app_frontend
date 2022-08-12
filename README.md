@@ -1,7 +1,18 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# To-do App
 
+The frontend of a fullstack to-do app dabbling in microservices architecture.
+
+## Features
+
+- Dark theme
+- Animated buttons and theme change
+- Auth interface (not fully implemented)
+
+
+## Development
+
+This project is built with React, Typescript and Tailwind CSS. It also uses Firebase integrations so you would need to install those packages.
 ## Available Scripts
 
 In the project directory, you can run:
@@ -44,3 +55,10 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+## Contributions
+
+Contributions are always welcome!
+
+An important improvement to be made is to add third party sign-ins
+and persist a login session. Right now, the to-do app does not check the session to see if you have logged in recently.
+So, it does not feel as intuitive and user friendly.
