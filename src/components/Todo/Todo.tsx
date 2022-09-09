@@ -19,12 +19,13 @@ const getAxiosConfig = () => {
 
 const Todo = () => {
     const [todos, setTodos] = useState<TodoProps[] | []>([])
+    const [todoIndex, setTodoIndex] = useState(1)
+
     useEffect(() => {
         if (userLoggedIn()) { // oni pull from server when the user is logged in
             getTodosFromServer()
         }
     }, [])
-
 
     // TOP LEVEL SERVER FUNCTIONS ARE HERE SO THAT WE CHECK IF USER IS LOGGED IN BEFORE WE CALL SERVER FUNCS
 
@@ -73,10 +74,12 @@ const Todo = () => {
         event.preventDefault()
         let input = event.target.todo_input
         let todo: TodoProps = {
-            id: todos.length + 1,
+            id: todoIndex,
             item: input.value
         }
         addTodo(todo)
+
+        setTodoIndex((prev) => prev + 1)
         event.target.reset() // reset the form
     }
 
